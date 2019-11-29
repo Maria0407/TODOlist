@@ -1,0 +1,38 @@
+<form class="form" (submit)="add(todoTitle.value,todoPriority.value); todoPriority.value=''; todoTitle.value=''">
+  <div class="form-group">
+    <input #todoTitle type="text" class="form-control" placeholder="Задание...">
+    <select #todoPriority>
+      <option [ngValue]="null" disabled>Выберите степень важности</option>
+      <option *ngFor="let pr of priorities" [ngValue]="pr">{{pr}}</option>
+    </select>
+  </div>
+  <input type="submit" value="SUBMIT" class="btn btn-success btn-lg btn-block">
+</form>
+
+<mat-table [dataSource]="dataSource" matSort>
+  <ng-container matColumnDef="title">
+  <mat-header-cell *matHeaderCellDef mat-sort-header> Задание </mat-header-cell>
+  <mat-cell *matCellDef="let todo">
+    <a (click)="edit(todo)">
+      <span *ngIf="todo!==editTodo">{{todo.title}}</span>
+      <input *ngIf="todo===editTodo" [(ngModel)]="todo.title" (blur)="update()" (keyup.enter)="update()">
+    </a>
+  </mat-cell>
+</ng-container>
+  <ng-container matColumnDef="created_at">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Дата </mat-header-cell>
+    <mat-cell *matCellDef="let todo"> {{todo.created_at | date:'yyyy-MM-dd hh:mm:ss'}} </mat-cell>
+  </ng-container>
+  <ng-container matColumnDef="priority">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Приоритет </mat-header-cell>
+    <mat-cell *matCellDef="let todo"> {{todo.priority}} </mat-cell>
+  </ng-container>
+  <ng-container matColumnDef="actions">
+    <mat-header-cell  *matHeaderCellDef > Действия </mat-header-cell>
+    <mat-cell *matCellDef="let todo" >
+      <button class="btn btn-danger" (click)="delete(todo)">Удалить</button>
+    </mat-cell>
+  </ng-container>
+  <mat-header-row *matHeaderRowDef="displayedColumns" color="primary"></mat-header-row>
+  <mat-row *matRowDef="let row; columns:displayedColumns;"></mat-row>
+</mat-table>
